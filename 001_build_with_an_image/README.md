@@ -46,9 +46,9 @@ You can see that make calls the compiler to build the hello binary. The containe
 
 So now we have a tool which can build C projects. Now you can push it up to a registry and test out the distribution functionality. If you don't have access to a registry, you can create an account at [Docker Hub](https://hub.docker.com). From there, select `Create Repository`
 
-![Create Repository](./2018-03-28--1522289410_891x537_scrot.png "Create Repository")
+![Create Repository](../images/2018-03-28--1522289410_891x537_scrot.png "Create Repository")
 
-![Image Details](./2018-03-28--1522290229_564x621_scrot.png "Image Details")
+![Image Details](../images/2018-03-28--1522290229_564x621_scrot.png "Image Details")
 
 Before you push, you'll need to rebuild the image with a new tag which includes your username, which should be nearly instant, again because of Docker's snapshotting capabilites.
 
@@ -81,7 +81,7 @@ e1df5dc88d2c: Pushed
 my_tag: digest: sha256:8f520497603f2520c07c3ee3b5def625586cafe4383044d975b27918b285419e size: 741
 ```
 
-![Image Details](./2018-03-28--1522290675_721x446_scrot.png "Image Details")
+![Image Details](../images/2018-03-28--1522290675_721x446_scrot.png "Image Details")
 
 Note that I've pushed up `my_tag` rather than `latest`.
 
@@ -130,5 +130,30 @@ hello!
 ```
 
 Keen observers will notice that Docker mentions a layer `Already exists`. It sees that the image inherits from a base image (debian) which is already installed locally, and strictly downloads a compressed copy of the new layer.
+
+Lastly, on tagging, try running the same command above, but without specifying the tag:
+
+```
+$ docker run -it --rm -v $(pwd):/build -w /build computermouth/000_create
+Unable to find image 'computermouth/000_create:latest' locally
+docker: Error response from daemon: manifest for computermouth/000_create:latest not found.
+See 'docker run --help'.
+```
+
+When pulling an image without specifying a tag, Docker will try to locate the image tagged with `latest`. In our case, this isn't found. When releasing, it's common to build your image as `computermouth/000_create:latest` (or `computermouth/000_create` since this will default to being tagged as `latest`), as well as building and pushing your image with a specific tag. Here's an example where you might tag and push your image as both `latest` and as the git commit hash:
+
+```
+$ docker build -t computermouth/000_create .
+$ docker tag computermouth/000_create:latest computermouth/000_create:$(git rev-parse --abbrev-ref HEAD)-$(git rev-parse --short HEAD)
+$ docker images
+REPOSITORY                 TAG                 IMAGE ID            CREATED             SIZE
+computermouth/000_create   latest              e436128f70be        2 minutes ago       235MB
+computermouth/000_create   master-9250f90      e436128f70be        2 minutes ago       235MB
+debian                     latest              2b98c9851a37        2 weeks ago         100MB
+$ docker push computermouth/000_create
+$ docker push computermouth/000_create:master-9250f90
+```
+
+So now anyone pulling `computermouth/000_create` will recieve the latest build, but also have the option to pull an older build from branch `master` at the commit hash `9250f90`. This often proves useful when pulling a specific version of an operating system or software from an upstream image, or for providing a snapshot to roll back to in production.
 
 The big takeaway here is that Docker makes it easy to distribute tooling. Using this method, developers can customize and easily share 100% exact copies of their development tooling.

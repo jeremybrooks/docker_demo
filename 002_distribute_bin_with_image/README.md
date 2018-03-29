@@ -37,9 +37,9 @@ REPOSITORY                 TAG                 IMAGE ID            CREATED      
 235MB is a bit big for shipping a `hello world`. But there's a few options for slimming down containers.
 
 1. Remove build tools and source.
-..* `apt-get purge -y gcc`
-..* `apt-get purge -y make`
-..* `rm -rf /src`
+  * `apt-get purge -y gcc`
+  * `apt-get purge -y make`
+  * `rm -rf /src`
 
 Let's add these to the `Dockerfile` and rebuild.
 
@@ -98,23 +98,23 @@ debian                     latest              2b98c9851a37        2 weeks ago  
 The image is down ~20MB, but it's still quite a ways off from the image's original 100MB. Here's some more options for slimming a container:
 
 2. Base your image on a smaller image
-..* Debian for example also has a tag for this `debian:stretch-slim`
-..* Stretch is the codename of the latest distro
-..* Slim indicates fewer packages to start from, and a more sparse dependency policy.
+  * Debian for example also has a tag for this `debian:stretch-slim`
+  * Stretch is the codename of the latest distro
+  * Slim indicates fewer packages to start from, and a more sparse dependency policy.
 
 3. Base your image on Alpine
-..* Alpine is a Linux distro focused on small size and security.
-..* It uses musl instead of glibc to keep binaries small.
-..* Most of the coreutils are provided by busybox
+  * Alpine is a Linux distro focused on small size and security.
+  * It uses musl instead of glibc to keep binaries small.
+  * Most of the coreutils are provided by busybox
 
 I won't go through these options here, but I encourage you to try, and investigate the difference in size.
 
 I will, however, skip to my favorite option.
 
 4. Only include what you need
-..* There's only one binary that gets called
-..* That binary has few dependencies that are easy to look up
-..* There's no need for a package manager, man pages, config files, etc
+  * There's only one binary that gets called
+  * That binary has few dependencies that are easy to look up
+  * There's no need for a package manager, man pages, config files, etc
 
 To implement this, we'll be using a newer feature, called multi-stage builds. The Dockerfile usage looks like this:
 

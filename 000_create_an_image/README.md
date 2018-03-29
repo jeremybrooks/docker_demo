@@ -40,7 +40,7 @@ debian                   latest              2b98c9851a37        2 weeks ago    
 You can see that you've pulled down the latest docker image, and created a new (untitled and untagged one). The image is untitled and untagged, because those items need to be specified at build time. Lets go ahead and do that now.
 
 ```
-$ docker build -t 000_create
+$ docker build -t 000_create .
 ```
 
 And check your image list again:
@@ -55,7 +55,7 @@ debian              latest              2b98c9851a37        2 weeks ago         
 Now we've named the image, and docker gives it the default `latest` tag. You can specify a different tag like this:
 
 ```
-$ docker build -t 000_create:my_tag
+$ docker build -t 000_create:my_tag .
 $ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 000_create          latest              a94f1f09ec00        12 minutes ago      235MB

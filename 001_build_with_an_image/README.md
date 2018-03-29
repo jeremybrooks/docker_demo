@@ -129,4 +129,6 @@ $ ./hello
 hello!
 ```
 
+Keen observers will notice that Docker mentions a layer `Already exists`. It sees that the image inherits from a base image (debian) which is already installed locally, and strictly downloads a compressed copy of the new layer.
+
 The big takeaway here is that Docker makes it easy to distribute tooling. Using this method, developers can customize and easily share 100% exact copies of their development tooling.
